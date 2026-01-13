@@ -4,17 +4,17 @@
 
 ## Website screenshots
 ### Sing in page
-![API request example](1.png)
+![API request example](images/1.png)
 ### Sing up page  
-![API request example](2.png) 
+![API request example](images/2.png) 
 ### Home page
-![API request example](3.png) 
+![API request example](images/3.png) 
 ### User page 
-![API request example](4.png)  
+![API request example](images/4.png)  
 ### Post page
-![API request example](5.png)  
+![API request example](images/5.png)  
 ### Create post page
-![API request example](6.png)   
+![API request example](images/6.png)   
 
 ## Requirements and dependencies
     
@@ -72,4 +72,5 @@
 - npm run dev
 
         After this use URL that frontend used and do anything you think you need to test the program's operation, the user-friendly interface will help you with this.
+
 
