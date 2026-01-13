@@ -1,0 +1,48 @@
+.tg {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.tg.is-dis {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.tg__inp {
+  display: none;
+}
+
+.tg__knob {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.tg__knob::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.tg__inp:checked + .tg__knob {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.tg__inp:checked + .tg__knob::after {
+  transform: translateX(18px);
+  background: var(--button-text);
+}
+.tg__label {
+  font-size: 13px;
+  color: var(--text-muted);
+}

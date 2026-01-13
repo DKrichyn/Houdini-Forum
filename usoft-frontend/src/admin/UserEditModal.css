@@ -1,0 +1,116 @@
+.ue__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.ue__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 160px;
+  align-items: end;
+  gap: 16px;
+  min-width: 0;
+}
+
+.ue__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ue__field--role {
+  justify-self: end;
+  width: 160px;
+}
+
+.ue__label {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.ue__input {
+  width: 100%;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text);
+  padding: 0 14px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.ue__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ue__select {
+  appearance: none;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%234ade80' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.ue__error {
+  color: var(--danger);
+  font-size: 13px;
+  padding-top: 2px;
+}
+
+.ue__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.ue__btn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ue__btn:hover {
+  background: var(--bg-elev-1);
+}
+
+.ue__btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.ue__btn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+@media (max-width: 860px) {
+  .ue__grid {
+    grid-template-columns: 1fr 1fr 140px;
+  }
+  .ue__field--role {
+    width: 140px;
+  }
+}
+
+@media (max-width: 720px) {
+  .ue__grid {
+    grid-template-columns: 1fr;
+  }
+  .ue__field--role {
+    width: 100%;
+    justify-self: stretch;
+  }
+  .ue__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}

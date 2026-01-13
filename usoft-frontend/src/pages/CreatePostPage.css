@@ -1,0 +1,134 @@
+.cpg {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.cpg__card {
+  width: 100%;
+  max-width: 760px;
+
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--bg-elev-1);
+
+  color: var(--text);
+  padding: 20px 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.cpg__title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.cpg__field {
+  display: grid;
+  gap: 6px;
+}
+.cpg__label {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.cpg__input,
+.cpg__textarea {
+  width: 100%;
+
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--bg-main);
+
+  color: var(--text);
+  padding: 10px 12px;
+  outline: none;
+}
+.cpg__input:focus,
+.cpg__textarea:focus {
+  border-color: var(--accent);
+
+  box-shadow: 0 0 0 3px rgba(var(--brand-600-rgb) / 0.15);
+}
+
+.cpg__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cpg__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+
+  background: var(--bg-main);
+
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+.cpg__chip input {
+  display: none;
+}
+.cpg__chip:hover {
+  border-color: var(--accent);
+}
+.cpg__chip.is-active {
+  background: var(--bg-elev-1);
+
+  border-color: var(--accent);
+}
+
+.cpg__hint {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.cpg__err {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.cpg__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.cpg-btn {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--bg-elev-1);
+
+  color: var(--text);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.cpg-btn:hover {
+  border-color: var(--accent);
+}
+.cpg-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.cpg-btn--primary {
+  background: var(--accent);
+
+  border-color: var(--accent);
+
+  color: var(--accent-contrast);
+}
+.cpg-btn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}

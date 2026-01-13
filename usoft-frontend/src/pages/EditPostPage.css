@@ -1,0 +1,126 @@
+.epg {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.epg__card {
+  width: 100%;
+  max-width: 760px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 20px 22px;
+  display: grid;
+  gap: 14px;
+}
+
+.epg__title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.epg__field {
+  display: grid;
+  gap: 6px;
+}
+.epg__label {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.epg__input,
+.epg__textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-main);
+  color: var(--text);
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.epg__input:focus,
+.epg__textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--brand-600-rgb), 0.18);
+}
+
+.epg__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.epg__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--bg-main);
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+.epg__chip input {
+  display: none;
+}
+.epg__chip:hover {
+  border-color: var(--accent);
+}
+.epg__chip.is-active {
+  background: rgba(var(--brand-600-rgb) / 0.25);
+  border-color: var(--accent);
+}
+
+.epg__hint {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.epg__err {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.epg__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.epg-btn {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-elev-1);
+  color: var(--text);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.epg-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.epg-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.epg-btn--primary {
+  background: var(--button-bg);
+  border-color: var(--accent);
+  color: var(--button-text);
+  font-weight: 600;
+}
+.epg-btn--primary:hover:not(:disabled) {
+  background: var(--button-bg-hover);
+  border-color: var(--accent-hover);
+}
+
+.epg__state {
+  color: var(--text-muted);
+}
+.epg__state--err {
+  color: var(--danger);
+}

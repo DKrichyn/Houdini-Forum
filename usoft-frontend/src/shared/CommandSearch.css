@@ -1,0 +1,89 @@
+.cmd {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 560px;
+
+  background: var(--bg-elev-1);
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: visible;
+}
+
+.cmd__input {
+  flex: 1;
+  height: 40px;
+  padding: 0 14px 0 16px;
+
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+.cmd__input::placeholder {
+  color: var(--text-muted);
+}
+
+.cmd__btn {
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  background: transparent;
+
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.cmd__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.cmd__item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+
+  color: var(--text);
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  cursor: pointer;
+}
+.cmd__item:hover,
+.cmd__item.is-active {
+  background: var(--bg-elev-1);
+}
+
+.cmd__title {
+  font-weight: 700;
+}
+.cmd__group {
+  font-size: 12px;
+
+  color: var(--text-muted);
+}
+
+.cmd.is-disabled {
+  opacity: 0.6;
+  pointer-events: auto;
+}
+.cmd.is-disabled .cmd__input {
+  cursor: not-allowed;
+}

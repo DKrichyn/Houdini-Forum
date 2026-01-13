@@ -1,0 +1,214 @@
+.pc {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  color: var(--text);
+  box-shadow: var(--shadow-1);
+  transition: transform 0.06s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease, background 0.15s ease;
+  display: grid;
+  gap: 10px;
+}
+
+.pc--clickable {
+  cursor: pointer;
+}
+.pc--clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+  background: var(--bg-elev-1);
+  border-color: var(--accent);
+}
+.pc--clickable:active {
+  transform: translateY(0);
+}
+
+.pc--card {
+  padding: 18px 20px;
+}
+.pc--line {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+}
+
+.pc--inactive {
+  opacity: 0.75;
+  filter: grayscale(20%) saturate(0.8);
+  background: var(--post-inactive-bg, var(--card-bg));
+}
+
+.pc__head {
+  display: flex;
+  align-items: center;
+}
+.pc__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.pc__author {
+  font-weight: 600;
+  color: var(--accent);
+}
+.pc__dot {
+  opacity: 0.6;
+}
+
+.pc__main {
+  display: grid;
+  gap: 6px;
+}
+.pc__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
+.pc--card .pc__title {
+  font-size: 22px;
+}
+
+.pc__preview {
+  margin: 0;
+  color: var(--text-muted);
+  opacity: 0.95;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.pc__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pc__cat {
+  font-size: 12px;
+  color: var(--text);
+  background: rgb(var(--brand-600-rgb) / 0.25);
+  border: 1px solid rgb(var(--brand-600-rgb) / 0.55);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.pc__cat--empty {
+  opacity: 0.7;
+  font-style: italic;
+}
+.pc__cat--loading {
+  opacity: 0.8;
+}
+
+.pc__foot {
+  margin-top: 2px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.pc__badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgb(var(--brand-700-rgb) / 0.25);
+  border: 1px solid rgb(var(--brand-700-rgb) / 0.45);
+  font-size: 12px;
+  color: var(--text);
+}
+.pc-badge__icon {
+  line-height: 1;
+  opacity: 0.9;
+}
+.pc-badge__val {
+  font-weight: 800;
+}
+
+.pc__actions {
+  display: inline-flex;
+  gap: 8px;
+  justify-self: end;
+}
+
+.pc__btn {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: var(--button-bg);
+  color: var(--button-text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.04s ease;
+}
+.pc__btn:hover {
+  background: var(--button-bg-hover);
+  border-color: var(--accent-hover);
+}
+.pc__btn:active {
+  transform: translateY(1px);
+}
+.pc__btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.pc__btn--edit {
+  border-color: rgb(var(--brand-600-rgb) / 0.45);
+  background: rgb(var(--brand-600-rgb) / 0.25);
+  color: var(--accent-contrast);
+}
+.pc__btn--edit:hover {
+  border-color: var(--accent);
+  background: rgb(var(--brand-600-rgb) / 0.35);
+}
+
+.pc__btn--danger {
+  border-color: rgb(var(--danger-500-rgb) / 0.4);
+  background: rgb(var(--danger-500-rgb) / 0.12);
+  color: var(--danger);
+}
+.pc__btn--danger:hover {
+  background: rgb(var(--danger-500-rgb) / 0.22);
+}
+
+@media (max-width: 600px) {
+  .pc--card .pc__title {
+    font-size: 20px;
+  }
+  .pc__foot {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .pc__actions {
+    justify-self: start;
+  }
+}
+
+.pc--inactive .pc__btn--danger {
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: pointer;
+  background: rgb(var(--danger-500-rgb) / 0.18) !important;
+  border-color: rgb(var(--danger-500-rgb) / 0.55) !important;
+  color: var(--danger) !important;
+}
+
+.pc--inactive .pc__btn--danger:hover {
+  background: rgb(var(--danger-500-rgb) / 0.28) !important;
+}

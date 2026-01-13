@@ -1,0 +1,242 @@
+.um {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 6px;
+}
+
+.um__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.um__search {
+  flex: 1;
+  min-width: 220px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text);
+  padding: 0 12px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+.um__search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.um__create {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.um__createFormPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 12px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out, padding 0.2s ease-out,
+    opacity 0.2s ease-out;
+}
+
+.um__createFormPanel.is-open {
+  padding: 12px;
+  max-height: 160px;
+  opacity: 1;
+}
+
+.um__createGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.um__createActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.um__createActions .um__input {
+  flex: 1;
+  min-width: 120px;
+}
+
+.um__input {
+  height: 38px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text);
+  padding: 0 10px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.um__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.um__btn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s, border-color 0.15s, color 0.15s;
+}
+.um__btn:hover {
+  background: var(--bg-elev-1);
+}
+.um__btn:active {
+  transform: scale(0.98);
+}
+
+.um__btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--button-text);
+}
+.um__btn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.um__btn--danger {
+  border-color: rgb(var(--danger-500-rgb) / 0.4);
+  background: rgb(var(--danger-500-rgb) / 0.12);
+  color: var(--danger);
+}
+.um__btn--danger:hover {
+  background: rgb(var(--danger-500-rgb) / 0.22);
+  border-color: rgb(var(--danger-500-rgb) / 0.4);
+}
+
+.um__state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 10px 0;
+}
+.um__state--err {
+  color: var(--danger);
+}
+.um__empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 12px 0;
+}
+
+.um__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  transition: max-height 0.2s ease-out;
+}
+
+.um.is-creating .um__list {
+  max-height: 35vh;
+}
+
+.um__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  transition: background 0.15s;
+}
+.um__row:hover {
+  background: var(--bg-elev-1);
+}
+
+.um__title {
+  color: var(--text);
+}
+.um__line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.um__muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.um__dot {
+  color: var(--border);
+}
+.um__login {
+  font-weight: 700;
+}
+.um__name {
+  font-weight: 600;
+}
+.um__role {
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.um__role--admin {
+  border-color: var(--status-admin-border);
+  color: var(--status-admin-text);
+}
+.um__role--user {
+  border-color: var(--status-user-border);
+  color: var(--status-user-text);
+}
+.um__badge {
+  margin-left: 8px;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid;
+  color: var(--status-verified-text);
+  border-color: var(--status-verified-border);
+}
+
+.um__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.um__editFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.um__list::-webkit-scrollbar {
+  width: 8px;
+}
+.um__list::-webkit-scrollbar-thumb {
+  background: var(--bg-elev-1);
+  border-radius: 6px;
+}
+.um__list::-webkit-scrollbar-thumb:hover {
+  background: var(--border);
+}

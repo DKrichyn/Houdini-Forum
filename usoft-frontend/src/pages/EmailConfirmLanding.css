@@ -1,0 +1,49 @@
+/* src/pages/EmailConfirmLanding.css */
+.ecl-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.ecl-card {
+  border: 1px solid var(--card-border, #2a2a2a);
+  background: var(--card-bg, #111);
+  color: var(--text, #eaeaea);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-1, 0 4px 16px rgba(0,0,0,.25));
+  padding: 18px 16px;
+}
+
+.ecl-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.ecl-state {
+  color: var(--text-muted, #9aa0a6);
+}
+
+.ecl-error {
+  color: var(--err, #ef4444);
+  font-weight: 600;
+  margin: 6px 0 10px;
+}
+
+.ecl-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ecl-btn {
+  border: 1px solid var(--card-border, #2a2a2a);
+  border-radius: var(--radius-sm, 8px);
+  padding: 8px 14px;
+  background: var(--bg-elev-1, #181a1b);
+  color: var(--text, #eaeaea);
+  cursor: pointer;
+}
+.ecl-btn:hover {
+  border-color: var(--accent, #16a34a);
+}

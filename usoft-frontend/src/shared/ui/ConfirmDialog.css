@@ -1,0 +1,78 @@
+.cd-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.cd-card {
+  width: min(520px, 92vw);
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  padding: 16px 16px 12px;
+}
+
+.cd-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.cd-msg {
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 14px;
+  white-space: pre-wrap;
+}
+
+.cd-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cd-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+  background: var(--bg-elev-1);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.04s ease;
+}
+.cd-btn:hover {
+  background: var(--bg-main);
+  border-color: var(--accent);
+}
+.cd-btn:active {
+  transform: translateY(1px);
+}
+
+.cd-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+.cd-btn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.cd-btn--primary.is-danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+}
+.cd-btn--primary.is-danger:hover {
+  filter: brightness(1.05);
+}

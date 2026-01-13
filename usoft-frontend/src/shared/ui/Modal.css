@@ -1,0 +1,217 @@
+.modalRoot {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+}
+
+.modalBackdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(10, 12, 18, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.modalCard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: calc(100vw - 32px);
+  transform: translate(-50%, -50%);
+
+  background: var(--card-bg);
+
+  color: var(--text);
+
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-2);
+  padding: 0;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+
+  border-bottom: 1px solid var(--card-border);
+}
+
+.modalTitle {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.modalClose {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+
+  border: 1px solid var(--card-border);
+
+  background: var(--bg-elev-1);
+
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.modalClose:hover {
+  background: var(--bg-main);
+}
+
+.modalBody {
+  padding: 16px;
+}
+
+.modalForm {
+  display: grid;
+  gap: 12px;
+}
+.modalRow {
+  display: grid;
+  gap: 6px;
+}
+.modalLabel {
+  font-size: 12px;
+
+  color: var(--text-muted);
+}
+.modalInput {
+  height: 40px;
+  border-radius: var(--radius-sm);
+
+  border: 1px solid var(--card-border);
+
+  background: var(--bg-main);
+
+  color: var(--text);
+  padding: 0 12px;
+}
+.modalTextarea {
+  min-height: 90px;
+  border-radius: var(--radius-sm);
+
+  border: 1px solid var(--card-border);
+
+  background: var(--bg-main);
+
+  color: var(--text);
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.modalInput:focus,
+.modalTextarea:focus {
+  border-color: var(--accent);
+
+  box-shadow: 0 0 0 3px rgba(var(--brand-600-rgb) / 0.15);
+  outline: none;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.btn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
+}
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--bg-elev-1);
+
+  border-color: var(--card-border);
+
+  color: var(--text);
+}
+.btn-secondary:hover {
+  background: var(--card-bg);
+}
+
+.btn-primary {
+  background: var(--button-bg);
+
+  border-color: var(--accent);
+
+  color: var(--button-text);
+
+  box-shadow: 0 6px 18px rgba(var(--brand-600-rgb) / 0.35);
+}
+.btn-primary:hover {
+  background: var(--button-bg-hover);
+  border-color: var(--accent-hover);
+  filter: none;
+}
+
+.modalFile-input {
+  display: none;
+}
+
+.modalFile-wrapper {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-main);
+  padding: 0 4px;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.modalFile-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  margin-right: 10px;
+
+  background: var(--bg-elev-1);
+  border: 1px solid var(--border);
+  color: var(--text);
+
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.modalFile-btn:hover {
+  background: var(--card-bg);
+  border-color: var(--accent);
+}
+.modalFile-btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--brand-600-rgb) / 0.15);
+}
+
+.modalFile-name {
+  font-size: 14px;
+  color: var(--text-muted);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modalFile-name.is-selected {
+  color: var(--text);
+}

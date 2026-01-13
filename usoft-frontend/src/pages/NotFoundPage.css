@@ -1,0 +1,142 @@
+:root {
+  --header-h: 64px;
+}
+
+.nf {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--header-h));
+  overflow: hidden;
+  background: #0b0f14;
+
+  display: grid;
+  place-items: center;
+}
+
+.nf__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  filter: saturate(0.9);
+}
+
+.nf__overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.82)
+  );
+}
+
+.nf__content {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 92vw);
+  padding: 16px;
+  box-sizing: border-box;
+
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #eaf1ff;
+}
+
+.nf__box {
+  width: 100%;
+  padding: clamp(20px, 4vw, 36px);
+  border-radius: 20px;
+  background: rgba(16, 24, 32, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.nf__code {
+  font-size: clamp(96px, 18vw, 200px);
+  line-height: 1;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 60px rgba(59, 130, 246, 0.25);
+}
+
+.nf__title {
+  margin: 10px 0 6px;
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.nf__desc {
+  margin: 0 0 18px;
+  font-size: clamp(14px, 2.2vw, 18px);
+  opacity: 0.92;
+}
+
+.nf__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-width: 160px;
+  height: 48px;
+  padding: 0 22px;
+
+  border-radius: 14px;
+  background: var(--brand-600);
+  color: var(--accent-contrast);
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+
+  box-shadow: 0 8px 28px rgb(var(--brand-600-rgb) / 0.35);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+.nf__btn:hover {
+  background: var(--brand-500);
+}
+
+.nf__btn:active {
+  background: var(--brand-700);
+  filter: brightness(0.98);
+}
+
+.nf__btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 6px rgb(var(--brand-600-rgb) / 0.25),
+    0 8px 28px rgb(0 0 0 / 0.35);
+}
+
+.nf__btn-ic {
+  display: inline-block;
+  width: 1.25em;
+  line-height: 1;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf__video {
+    display: none;
+  }
+}
+
+:root,
+:root.theme-dark {
+  --bg: #0d1712;
+  --text: #e9f1e3;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
