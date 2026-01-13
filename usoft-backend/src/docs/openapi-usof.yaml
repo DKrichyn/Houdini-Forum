@@ -1,0 +1,1321 @@
+openapi: 3.0.3
+info:
+  title: USOF Backend API
+  version: 1.2.0
+  description: |
+    Forum platform backend (No ORM, pure SQL + mysql2). This spec enumerates all implemented routes, parameters, request/response schemas, and auth rules.
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: System
+  - name: Auth
+  - name: Users
+  - name: Posts
+  - name: Comments
+  - name: Categories
+  - name: Favorites
+  - name: Admin
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+      required: [token]
+
+    Ok:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required: [ok]
+
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        login: { type: string }
+        fullName: { type: string }
+        email: { type: string, format: email }
+        emailConfirmed: { type: boolean }
+        avatarUrl: { type: string, nullable: true }
+        role: { type: string, enum: [user, admin] }
+        rating: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, login, fullName, email, role, rating, createdAt, updatedAt]
+
+    UserCreate:
+      type: object
+      properties:
+        login: { type: string, minLength: 3, maxLength: 50 }
+        password: { type: string, minLength: 6, maxLength: 100 }
+        passwordConfirm: { type: string }
+        fullName: { type: string, minLength: 3, maxLength: 100 }
+        email: { type: string, format: email }
+        role: { type: string, enum: [user, admin] }
+      required: [login, password, passwordConfirm, fullName, email, role]
+
+    UserUpdate:
+      type: object
+      properties:
+        fullName: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [user, admin] }
+
+    Category:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        slug: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, title, createdAt, updatedAt]
+
+    CategoryCreate:
+      type: object
+      properties:
+        title: { type: string, minLength: 2 }
+        description: { type: string, nullable: true }
+      required: [title]
+
+    CategoryUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string, nullable: true }
+
+    Post:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        content: { type: string }
+        status: { type: string, enum: [active, inactive] }
+        likesCount: { type: integer }
+        dislikesCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        authorId: { type: integer }
+        authorLogin: { type: string }
+        authorFullName: { type: string }
+        authorRating: { type: integer }
+      required: [id, title, content, status, likesCount, dislikesCount, createdAt, updatedAt]
+
+    PostCreate:
+      type: object
+      properties:
+        title: { type: string, minLength: 3 }
+        content: { type: string, minLength: 3 }
+        categories:
+          type: array
+          minItems: 1
+          items: { type: integer }
+      required: [title, content, categories]
+
+    PostUpdate:
+      type: object
+      properties:
+        title: { type: string, minLength: 3 }
+        content: { type: string, minLength: 3 }
+        categories:
+          type: array
+          items: { type: integer }
+        status:
+          type: string
+          enum: [active, inactive]
+
+    Comment:
+      type: object
+      properties:
+        id: { type: integer }
+        postId: { type: integer }
+        authorId: { type: integer }
+        content: { type: string }
+        status: { type: string, enum: [active, inactive] }
+        likesCount: { type: integer }
+        dislikesCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    CommentCreate:
+      type: object
+      properties:
+        postId: { type: integer }
+        content: { type: string, minLength: 1 }
+      required: [postId, content]
+
+    CommentStatusUpdate:
+      type: object
+      properties:
+        status: { type: string, enum: [active, inactive] }
+      required: [status]
+
+    Like:
+      type: object
+      properties:
+        id: { type: integer }
+        authorId: { type: integer }
+        targetType: { type: string, enum: [post, comment] }
+        targetId: { type: integer }
+        type: { type: string, enum: [like, dislike] }
+        createdAt: { type: string, format: date-time }
+
+    LikeCreate:
+      type: object
+      properties:
+        type: { type: string, enum: [like, dislike], default: like }
+
+    FavoriteOk:
+      type: object
+      properties:
+        ok: { type: boolean }
+      required: [ok]
+
+    PaginatedPosts:
+      type: object
+      properties:
+        total: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Post' }
+      required: [total, page, limit, items]
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+paths:
+  # ===================== System =====================
+  /health:
+    get:
+      tags: [System]
+      summary: Healthcheck
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string }
+
+  # ===================== Auth =======================
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user (sends email confirmation token)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [login, password, passwordConfirm, fullName, email]
+              properties:
+                login: { type: string }
+                password: { type: string }
+                passwordConfirm: { type: string }
+                fullName: { type: string }
+                email: { type: string, format: email }
+      responses:
+        '201':
+          description: Created (user id + echo)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer }
+                  login: { type: string }
+                  email: { type: string, format: email }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login and get JWT (requires login, email, password)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [login, email, password]
+              properties:
+                login: { type: string }
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200':
+          description: JWT token
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthToken' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/auth/confirm/{token}:
+    get:
+      tags: [Auth]
+      summary: Confirm email by token
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Email confirmed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ok' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout (stateless)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ok' }
+
+  /api/auth/password-reset:
+    post:
+      tags: [Auth]
+      summary: Start password reset (sends email with token)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+              required: [email]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ok' }
+
+  /api/auth/password-reset/{token}:
+    post:
+      tags: [Auth]
+      summary: Confirm password reset by token
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password: { type: string, minLength: 6 }
+              required: [password]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ok' }
+
+  # ===================== Users ======================
+  /api/users:
+    get:
+      tags: [Users]
+      summary: List users (admin only)
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+    post:
+      tags: [Users]
+      summary: Create user (admin)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserCreate' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/users/avatar:
+    patch:
+      tags: [Users]
+      summary: Upload/replace my avatar
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+              required: [avatar]
+      responses:
+        '200':
+          description: Avatar URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  avatarUrl: { type: string }
+                required: [avatarUrl]
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/users/{id}:
+    get:
+      tags: [Users]
+      summary: Get user by id (self or admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    patch:
+      tags: [Users]
+      summary: Update user (self or admin; only admin may change role)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserUpdate' }
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    delete:
+      tags: [Users]
+      summary: Delete user (self or admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/users/{id}/favorites:
+    get:
+      tags: [Favorites, Users]
+      summary: List a user's favorite posts (self or admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Favorite posts visible to the requester
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Post' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ===================== Posts ======================
+  /api/posts:
+    get:
+      tags: [Posts]
+      summary: List posts (public). Visibility and status depend on role/ownership.
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+        - in: query
+          name: sort
+          schema: { type: string, enum: [likes, date], default: likes }
+        - in: query
+          name: order
+          schema: { type: string, enum: [asc, desc], default: desc }
+        - in: query
+          name: status
+          schema: { type: string, enum: [active, inactive, all], default: active }
+          description: Non-admins cannot use "all" effectively; inactive visibility restricted.
+        - in: query
+          name: categories
+          style: form
+          explode: true
+          schema:
+            oneOf:
+              - type: array
+                items: { type: integer }
+              - type: string
+          description: IDs array, or category title string to filter by name.
+        - in: query
+          name: from
+          schema: { type: string, format: date-time }
+        - in: query
+          name: to
+          schema: { type: string, format: date-time }
+        - in: query
+          name: favorite
+          schema: { type: boolean }
+          description: If true, returns only favorites for the current user (requires auth).
+      security: []
+      responses:
+        '200':
+          description: Paginated posts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginatedPosts' }
+
+    post:
+      tags: [Posts]
+      summary: Create post
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostCreate' }
+      responses:
+        '201':
+          description: Created post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/posts/{id}:
+    get:
+      tags: [Posts]
+      summary: Get post by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    patch:
+      tags: [Posts]
+      summary: Update post (owner content/title; admin may change status; admin may NOT edit content)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostUpdate' }
+      responses:
+        '200':
+          description: Updated post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    delete:
+      tags: [Posts]
+      summary: Delete post (owner or admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/posts/{id}/comments:
+    get:
+      tags: [Posts, Comments]
+      summary: List comments for a post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Comment' }
+
+  /api/posts/{id}/categories:
+    get:
+      tags: [Posts, Categories]
+      summary: List categories for a post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Category' }
+
+  /api/posts/{id}/like:
+    get:
+      tags: [Posts]
+      summary: Get likes/dislikes for a post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Likes
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Like' }
+
+    post:
+      tags: [Posts]
+      summary: Like/dislike a post
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LikeCreate' }
+      responses:
+        '201':
+          description: Created like
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Like' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409':
+          description: Already liked
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+    delete:
+      tags: [Posts]
+      summary: Remove my like/dislike from a post
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/posts/{id}/favorite:
+    post:
+      tags: [Posts, Favorites]
+      summary: Add post to my favorites
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '201':
+          description: Added
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FavoriteOk' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: Already in favorites
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+    delete:
+      tags: [Posts, Favorites]
+      summary: Remove post from my favorites
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ===================== Comments ===================
+  /api/comments:
+    post:
+      tags: [Comments]
+      summary: Create comment (post must be active)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommentCreate' }
+      responses:
+        '201':
+          description: Created comment
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Comment' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/comments/{id}:
+    get:
+      tags: [Comments]
+      summary: Get comment by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Comment
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Comment' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    patch:
+      tags: [Comments]
+      summary: Update comment status (any authenticated user)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommentStatusUpdate' }
+      responses:
+        '200':
+          description: Updated comment
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Comment' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    delete:
+      tags: [Comments]
+      summary: Delete comment (owner or admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/comments/{id}/like:
+    get:
+      tags: [Comments]
+      summary: Get likes/dislikes for a comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Likes
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Like' }
+
+    post:
+      tags: [Comments]
+      summary: Like/dislike a comment
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LikeCreate' }
+      responses:
+        '201':
+          description: Created like
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Like' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409':
+          description: Already liked
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+    delete:
+      tags: [Comments]
+      summary: Remove my like/dislike from a comment
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ===================== Categories =================
+  /api/categories:
+    get:
+      tags: [Categories]
+      summary: List categories
+      responses:
+        '200':
+          description: Categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Category' }
+
+    post:
+      tags: [Categories]
+      summary: Create category (admin)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CategoryCreate' }
+      responses:
+        '201':
+          description: Created category
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Category' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /api/categories/{id}:
+    get:
+      tags: [Categories]
+      summary: Get category by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Category
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Category' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    patch:
+      tags: [Categories]
+      summary: Update category (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CategoryUpdate' }
+      responses:
+        '200':
+          description: Updated category
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Category' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    delete:
+      tags: [Categories]
+      summary: Delete category (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/categories/{id}/posts:
+    get:
+      tags: [Categories, Posts]
+      summary: List posts belonging to a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Posts in category
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Post' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ===================== Admin (REST) ===============
+  /api/admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Dashboard totals
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Counts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users: { type: integer }
+                  posts: { type: integer }
+                  comments: { type: integer }
+                  categories: { type: integer }
+
+  /api/admin/users:
+    get:
+      tags: [Admin]
+      summary: List users (admin)
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/User' }
+    post:
+      tags: [Admin]
+      summary: Create user (emailConfirmed=1)
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [login, email, fullName, password]
+              properties:
+                login: { type: string }
+                email: { type: string, format: email }
+                fullName: { type: string }
+                password: { type: string }
+                role: { type: string, enum: [user, admin], default: user }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/User'
+                  - type: object
+                    properties:
+                      emailConfirmed: { type: boolean }
+
+  /api/admin/users/{id}:
+    patch:
+      tags: [Admin]
+      summary: Update user fields (fullName/email/role)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName: { type: string }
+                email: { type: string, format: email }
+                role: { type: string, enum: [user, admin] }
+      responses:
+        '200':
+          description: Updated user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin]
+      summary: Delete user
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/admin/categories:
+    get:
+      tags: [Admin]
+      summary: List categories
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Category' }
+    post:
+      tags: [Admin]
+      summary: Create category
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title: { type: string }
+                description: { type: string, nullable: true }
+      responses:
+        '201':
+          description: Created category
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Category' }
+
+  /api/admin/categories/{id}:
+    patch:
+      tags: [Admin]
+      summary: Update category (title/description; slug recalculated when title provided)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string, nullable: true }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Category' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin]
+      summary: Delete category
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/admin/posts:
+    get:
+      tags: [Admin]
+      summary: List posts for moderation
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    title: { type: string }
+                    status: { type: string, enum: [active, inactive] }
+                    likesCount: { type: integer }
+                    dislikesCount: { type: integer }
+                    createdAt: { type: string, format: date-time }
+                    updatedAt: { type: string, format: date-time }
+                    authorLogin: { type: string }
+                    authorId: { type: integer }
+
+  /api/admin/posts/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Change post status
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, inactive] }
+      responses:
+        '200':
+          description: Updated post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/admin/posts/{id}:
+    delete:
+      tags: [Admin]
+      summary: Delete post
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/admin/comments:
+    get:
+      tags: [Admin]
+      summary: List comments for moderation
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Comment'
+                    - type: object
+                      properties:
+                        authorLogin: { type: string }
+                        postTitle: { type: string }
+
+  /api/admin/comments/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Change comment status
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, inactive] }
+      responses:
+        '200':
+          description: Updated comment
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Comment' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/admin/comments/{id}:
+    delete:
+      tags: [Admin]
+      summary: Delete comment
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Deleted }
+        '400': { $ref: '#/components/responses/BadRequest' }
